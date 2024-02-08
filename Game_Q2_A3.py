@@ -6,6 +6,7 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+GRAVITY = 0.5
 
 # Initialize Pygame
 pygame.init()
@@ -29,13 +30,35 @@ class Player(pygame.sprite.Sprite):
         # Player's movement speed
         self.speed = 5
 
+        #VERTICAL VELOCITY OF PLAYER FOR JUMPING
+        self.velocity_y = 0
+
+        #maximum jump height
+        self.jump_height = -10
+
     def update(self):
+       self.velocity_y +=GRAVITY
+       self.rect.y += self.velocity_y
+
+       if self.rect.bottom >= SCREEN_HEIGHT:
+            self.rect.bottom = SCREEN_HEIGHT
+            self.velocity_y = 0
+       
+       
         # Update player's position based on keyboard input
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
+       keys = pygame.key.get_pressed()
+       if keys[pygame.K_LEFT]:
             self.rect.x -= self.speed
-        if keys[pygame.K_RIGHT]:
+       if keys[pygame.K_RIGHT]:
             self.rect.x += self.speed
+       if keys[pygame.K_SPACE]:
+            self.jump()    
+
+
+    def jump(self):
+ # Check if the player is on the ground before jumping
+        if self.rect.bottom == SCREEN_HEIGHT:
+            self.velocity_y = self.jump_height  
 
 # Main game loop
 def main():
