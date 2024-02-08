@@ -60,6 +60,25 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom == SCREEN_HEIGHT:
             self.velocity_y = self.jump_height  
 
+
+# Enemy class
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.Surface((30, 30))
+        self.image.fill((255, 0, 0))  # Red color for enemy
+        self.rect = self.image.get_rect()
+        self.rect.center = (x, y)
+        self.speed = 3  # Adjust speed as needed
+
+    def update(self):
+        # Implement enemy movement logic here
+        self.rect.x -= self.speed
+
+        #make enemy only move within window
+        if self.rect.right < 0:
+            self.rect.left = SCREEN_WIDTH
+
 # Main game loop
 def main():
     # Create player object
@@ -68,6 +87,14 @@ def main():
     # Create sprite group for all game objects
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
+
+    #create sprite group for enemies
+    enemies = pygame.sprite.Group()
+
+    #addding enemies to group
+    enemy1 = Enemy(SCREEN_WIDTH, SCREEN_HEIGHT // 2)
+    enemies.add(enemy1)
+    all_sprites.add(enemy1)
 
     # Main loop
     running = True
@@ -81,11 +108,14 @@ def main():
         # Game logic
         all_sprites.update()
 
+        
+
         # Rendering
         # Clear the screen
         screen.fill(BLACK)
         # Draw all sprites onto the screen
         all_sprites.draw(screen)
+        
         # Flip the display
         pygame.display.flip()
         # Cap the frame rate at 60 FPS
