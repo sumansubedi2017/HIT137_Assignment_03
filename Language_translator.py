@@ -1,3 +1,4 @@
+#Importing the tkinter library for GUI development
 import tkinter as tk
 from tkinter import ttk
 from googletrans import Translator, LANGUAGES
@@ -56,5 +57,7 @@ class TranslatorApp(tk.Tk): #multiple inheritance, inheriting from tk.Tk class i
         self.output_text.insert(tk.END, translated.text)
 
 if __name__ == "__main__":
+    #Create an instance of the TranslatorApp class
     app = TranslatorApp()
+    #Start the main event loop to run the application
     app.mainloop()
