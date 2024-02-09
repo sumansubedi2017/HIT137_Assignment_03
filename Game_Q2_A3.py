@@ -52,6 +52,12 @@ class Player(pygame.sprite.Sprite):
         self.max_health = 100
         self.health = self.max_health
 
+        #defining health derease amount when hit by enemy
+        self.damage_amount = 10 
+
+        self.invincible = False
+
+
         #storing previous position for jump detection
         self.prev_bottom = self.rect.bottom
 
@@ -89,7 +95,11 @@ class Player(pygame.sprite.Sprite):
         
 
     def handle_collision(self, enemy):
-        self.health -= 10
+         if not self.invincible:
+             self.health -=10
+             #setting player invincible after being hit
+             self.invincible = True
+             pygame.time.set_timer(pygame.USEREVENT, 1000)
     
     def draw_health_bar(self, surface):
         # Calculate the width of the health bar
@@ -139,27 +149,6 @@ class Enemy(pygame.sprite.Sprite):
         health_bar.fill(RED)  # You can customize the color for enemies
         # Draw the health bar above the enemy's sprite
         surface.blit(health_bar, (self.rect.x, self.rect.y - 10))  
-
-
-class Projectile(pygame.sprite.Sprite):
-    def __init__(self, x, y, direction):
-        super().__init__()
-        # Create projectile surface and set initial position
-        self.image = pygame.Surface((10, 5))
-        self.image.fill(WHITE)
-        self.rect = self.image.get_rect(midleft=(x, y))
-        
-        # Projectile speed and direction
-        self.speed = 8
-        self.direction = direction  # 1 for right, -1 for left
-
-    def update(self):
-        # Move projectile horizontally
-        self.rect.x += self.speed * self.direction
-
-        # Remove projectile if it goes off-screen
-        if self.rect.right < 0 or self.rect.left > SCREEN_WIDTH:
-            self.kill()
     
 
 # Main game loop
@@ -183,13 +172,12 @@ def main():
             # Check if user quits the game
             if event.type == pygame.QUIT:
                 running = False
+            
+            elif event.type == pygame.USEREVENT:
+                player.invincible = False
 
         # Game logic
         all_sprites.update()
-
-        if(player.rect.bottom < enemy.rect.top) and (player.prev_bottom >= enemy.rect.top):
-            player.score += 1
-            print('score: ', player.score)
         
        
         #checking collissions
@@ -197,13 +185,7 @@ def main():
         for enemy_hit in collissions:
             player.handle_collision(enemy_hit)      
 
-        if player.health <= 0:
-            print('game Over')
-            running = False
-            #pass
-
         
-
         # Rendering
         # Clear the screen
         screen.fill(BLACK)

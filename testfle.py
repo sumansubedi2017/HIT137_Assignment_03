@@ -15,6 +15,7 @@ GRAVITY = 0.5
 # Initialize Pygame
 pygame.init()
 
+
 # Create the game window
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Side-Scrolling Game")
@@ -22,7 +23,7 @@ pygame.display.set_caption("Side-Scrolling Game")
 # Clock to control frame rate
 clock = pygame.time.Clock()
 
-# Font object
+#font object
 font = pygame.font.SysFont(None, 36)
 
 # Player class
@@ -36,18 +37,18 @@ class Player(pygame.sprite.Sprite):
         # Player's movement speed
         self.speed = 5
 
-        # Vertical velocity of player for jumping
+        #VERTICAL VELOCITY OF PLAYER FOR JUMPING
         self.velocity_y = 0
 
-        # Health attributes
         self.max_health = 100
         self.health = self.max_health
+        self.score = 0
 
-        # Maximum jump height
+        #maximum jump height
         self.jump_height = -10
 
-        # Storing previous position for jump detection
-        self.prev_bottom = self.rect.bottom
+        # Flag to track invincibility after being hit by an enemy
+        self.invincible = False
 
     def update(self):
         self.velocity_y += GRAVITY
@@ -66,28 +67,30 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             self.jump()
 
-        # Keeping player within boundary
+        #keeping player within boundary
         if self.rect.left < 0:
             self.rect.left = 0
         if self.rect.right > SCREEN_WIDTH:
-            self.rect.right = SCREEN_WIDTH
-
-        # Update previous bottom position
-        self.prev_bottom = self.rect.bottom
+            self.rect.right = SCREEN_WIDTH  
 
     def jump(self):
         # Check if the player is on the ground before jumping
         if self.rect.bottom == SCREEN_HEIGHT:
-            self.velocity_y = self.jump_height
+            self.velocity_y = self.jump_height  
 
     def handle_collision(self, enemy):
-        self.health -= 10
+        if not self.invincible:
+            self.health -= 10
+            self.invincible = True  # Set player to invincible after being hit
+            pygame.time.set_timer(pygame.USEREVENT, 1000)  # Set timer for 1 second
+            # You can adjust the duration of invincibility as needed
+            # Also, consider adding a visual effect to indicate invincibility
 
     def draw_health_bar(self, surface):
         # Calculate the width of the health bar
         bar_width = int(self.rect.width * (self.health / self.max_health))
         # Create the health bar surface
-        health_bar = pygame.Surface((bar_width, 5))
+        health_bar = pygame.Surface((bar_width, 10))
         if self.health > 60:
             color = GREEN
         elif self.health > 30:
@@ -96,7 +99,8 @@ class Player(pygame.sprite.Sprite):
             color = RED
         health_bar.fill(color)
         # Draw the health bar above the player's sprite
-        surface.blit(health_bar, (self.rect.x, self.rect.y - 10))
+        surface.blit(health_bar, (self.rect.x, self.rect.y - 20))
+
 
 # Enemy class
 class Enemy(pygame.sprite.Sprite):
@@ -106,16 +110,12 @@ class Enemy(pygame.sprite.Sprite):
         self.image.fill((255, 0, 0))  # Red color for enemy
         self.rect = self.image.get_rect(bottomleft=(x, y))
         self.speed = 3  # Adjust speed as needed
-
-        # Health attributes
-        self.max_health = 50  # Example max health for enemies
+        self.max_health = 50
         self.health = self.max_health
 
     def update(self):
         # Implement enemy movement logic here
         self.rect.x -= self.speed
-
-        # Make enemy only move within window
         if self.rect.right < 0:
             self.rect.left = SCREEN_WIDTH
 
@@ -126,13 +126,14 @@ class Enemy(pygame.sprite.Sprite):
         health_bar = pygame.Surface((bar_width, 5))
         health_bar.fill(RED)  # You can customize the color for enemies
         # Draw the health bar above the enemy's sprite
-        surface.blit(health_bar, (self.rect.x, self.rect.y - 10))
+        surface.blit(health_bar, (self.rect.x, self.rect.y - 10))  
+
 
 # Main game loop
 def main():
     # Create player object
     player = Player()
-
+    
     # Create enemy object
     enemy = Enemy(SCREEN_WIDTH - 50, SCREEN_HEIGHT - 30)
 
@@ -148,37 +149,29 @@ def main():
             # Check if user quits the game
             if event.type == pygame.QUIT:
                 running = False
+            # Check if invincibility timer event occurred
+            elif event.type == pygame.USEREVENT:
+                player.invincible = False  # Reset player to vulnerable after timer ends
 
         # Game logic
         all_sprites.update()
 
-        # Check if player jumps over the enemy
-        if (player.rect.bottom < enemy.rect.top) and (player.prev_bottom >= enemy.rect.top):
-            player.score += 1
-
-        # Checking collisions
+        # Collision detection and handling
         collisions = pygame.sprite.spritecollide(player, [enemy], False)
         for enemy_hit in collisions:
             player.handle_collision(enemy_hit)
 
-        if player.health <= 0:
-            print('Game Over')
-            # running = False  # Let's remove this line to keep the game window open after game over
-
         # Rendering
-        # Clear the screen
         screen.fill(BLACK)
+        all_sprites.draw(screen)
 
-        # Draw all sprites onto the screen
-        for sprite in all_sprites:
-            sprite.draw(screen)
-            if isinstance(sprite, Player):
-                sprite.draw_health_bar(screen)
-            elif isinstance(sprite, Enemy):
-                sprite.draw_health_bar(screen)
+        # Draw health bars for player and enemy
+        player.draw_health_bar(screen)
+        enemy.draw_health_bar(screen)
 
         # Flip the display
         pygame.display.flip()
+
         # Cap the frame rate at 60 FPS
         clock.tick(60)
 
