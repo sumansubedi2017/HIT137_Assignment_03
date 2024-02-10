@@ -93,6 +93,9 @@ class Projectile(pygame.sprite.Sprite):
             self.kill()
         
 
+
+
+            
 class Button:
     def __init__(self, text, position, size, color=(200, 200, 200), hover_color=(255, 255, 255), font_size=24):
         self.text = text
@@ -125,12 +128,17 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.topleft = pos
         self.speed = 2
         self.health = 100
+        self.shoot_delay = 1000  # Delay between shots in milliseconds
+        self.last_shot = pygame.time.get_ticks()
 
     def update(self):
         self.rect.x -= self.speed
         if self.rect.right <= 0:
             self.kill()
+                
+            
 
+       
 
 # Initialize Pygame
 pygame.init()
@@ -206,6 +214,8 @@ while running:
     if not game_over:
         all_sprites.update()
 
+        
+
         enemy_hit = pygame.sprite.groupcollide(enemies, projectiles, True, True)
         if enemy_hit:
             player.score += 20
@@ -246,7 +256,9 @@ while running:
                         current_level = LEVEL_3
                         player.score= 0
                         level_enemy_positions.append([(700, 300), (600, 250), (500, 200)])
-                        # Increase enemy speed for level 2
+                        background_image = pygame.image.load("level3.jpg").convert()
+                        background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+                        # Increase enemy speed for level 3
                         for enemy in enemies:
                             enemy.speed = 5
                             
