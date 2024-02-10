@@ -1,3 +1,4 @@
+#Import the pygame module for game development.
 import pygame
 import random
 import sys
