@@ -77,21 +77,21 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.center = start_pos
         self.target_pos = target_pos
         self.speed = 10
-        self.timer = 60 # 60 frames = 1 second
+        self.timer = 180 # 60 frames = 1 second
 
     def update(self):
-        dx = self.target_pos[0] - self.rect.centerx
+        # Calculate vertical distance
         dy = self.target_pos[1] - self.rect.centery
-        dist = max(1, abs(dx) + abs(dy))
-        dx = dx / dist * self.speed
+        dist = max(1, abs(dy))
+        
+        # Calculate vertical movement
         dy = dy / dist * self.speed
-        self.rect.centerx += dx
         self.rect.centery += dy
-        if self.rect.right > SCREEN_WIDTH or self.rect.left < 0 or self.rect.bottom > SCREEN_HEIGHT or self.rect.top < 0:
+
+        # Check if the projectile reaches the target vertically
+        if (dy > 0 and self.rect.centery >= self.target_pos[1]) or (dy < 0 and self.rect.centery <= self.target_pos[1]):
             self.kill()
-        self.timer -= 1
-        if self.timer <= 0:
-            self.kill()
+        
 
 class Button:
     def __init__(self, text, position, size, color=(200, 200, 200), hover_color=(255, 255, 255), font_size=24):
@@ -232,6 +232,13 @@ while running:
                         player.score = 0
                         level_enemy_positions[1] = [(700, 400), (600, 300), (500, 200), (400, 100)]
                         level_text = font.render(f"Level: {current_level}", True, WHITE)
+
+                        background_image = pygame.image.load("level2.jpg").convert()
+                        background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+                        for enemy in enemies:
+                            enemy.speed = 3
+
+
                         
 
 
@@ -239,17 +246,11 @@ while running:
                         current_level = LEVEL_3
                         player.score= 0
                         level_enemy_positions.append([(700, 300), (600, 250), (500, 200)])
-                        print("Current level:", current_level)
-
+                        # Increase enemy speed for level 2
+                        for enemy in enemies:
+                            enemy.speed = 5
                             
-                    # Load new background image
-                    #background_image = backgrounds[current_level]
-                    # Set new enemy positions
                    
-                    # Reset player position
-                    #player.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT)
-                    #all_sprites.add(player)
-                    # Spawn enemies for the new level
 
 
 
