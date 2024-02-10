@@ -35,7 +35,10 @@ class Player(pygame.sprite.Sprite):
         #self.image.fill(RED)
         self.image = pygame.image.load("player.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        scale_factor = 2  # Adjust as needed
+        self.image = pygame.transform.scale(self.image, (PLAYER_WIDTH * scale_factor, PLAYER_HEIGHT * scale_factor))
         self.rect = self.image.get_rect()
+        
         self.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT - PLAYER_HEIGHT)  # Adjusted position
 
         #self.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT)
@@ -60,6 +63,7 @@ class Player(pygame.sprite.Sprite):
         if self.rect.top >= SCREEN_HEIGHT - GROUND_HEIGHT:
             self.rect.top = SCREEN_HEIGHT - GROUND_HEIGHT
 
+       
      
 # Projectile class
 class Projectile(pygame.sprite.Sprite):
@@ -198,22 +202,24 @@ while running:
     if not game_over:
         all_sprites.update()
 
+        
         # Check collisions
         enemy_hit = pygame.sprite.groupcollide(enemies, projectiles, True, True)
         if enemy_hit:
-            player.score += 20
+           player.score += 20
 
         enemy_hit_player = pygame.sprite.spritecollide(player, enemies, False)
         if enemy_hit_player:
-            player.health -= 10
-            if player.health <= 0:
-                player.lives -= 1
-                if player.lives <= 0:
-                    game_over = True
+           player.health -= 10
+           if player.health <= 0:
+               player.lives -= 1
+               if player.lives <= 0:
+                   game_over = True
                     
-                else:
-                    player.health = 100
+               else:
+                   player.health = 100
 
+        
         collectible_hit = pygame.sprite.spritecollide(player, collectibles, True)
         for collectible in collectible_hit:
             player.health += 20
