@@ -36,7 +36,9 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.image.load("player.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (PLAYER_WIDTH, PLAYER_HEIGHT))
         self.rect = self.image.get_rect()
-        self.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT)
+        self.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT - PLAYER_HEIGHT)  # Adjusted position
+
+        #self.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT)
         self.speed = 5
         self.jump_power = -15
         self.gravity = 1
@@ -110,10 +112,12 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.Surface((ENEMY_WIDTH, ENEMY_HEIGHT))
         #self.image.fill(BLUE)
         self.image = pygame.image.load("alien.png").convert_alpha()
-        self.image = pygame.transform.scale(self.image, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        self.image = pygame.transform.scale(self.image, (ENEMY_WIDTH, ENEMY_HEIGHT))
         self.rect = self.image.get_rect()
-        self.rect.bottomright = (SCREEN_WIDTH - 50, SCREEN_HEIGHT - GROUND_HEIGHT)
-        self.speed = 3
+        self.rect.bottomleft = (SCREEN_WIDTH - 50, SCREEN_HEIGHT - GROUND_HEIGHT - ENEMY_HEIGHT)  # Adjusted position
+
+        #self.rect.bottomright = (SCREEN_WIDTH - 50, SCREEN_HEIGHT - GROUND_HEIGHT)
+        self.speed = 2
         self.health = 100
 
     def update(self):
@@ -144,6 +148,11 @@ game_over = False
 clock = pygame.time.Clock()
 spawn_enemy_event = pygame.USEREVENT + 1
 pygame.time.set_timer(spawn_enemy_event, 3000)
+
+background_image = pygame.image.load("background.jpeg").convert()
+background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+
+
 
 
 while running:
@@ -222,6 +231,7 @@ while running:
 
         # Drawing
         screen.fill((0, 0, 0))
+        screen.blit(background_image,(0,0))
         all_sprites.draw(screen)
 
         # Health bar
