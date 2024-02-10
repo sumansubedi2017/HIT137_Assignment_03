@@ -12,6 +12,7 @@ YELLOW = (255, 255, 0)
 RED = (255, 0, 0)
 GRAVITY = 0.5
 
+
 # Initialize Pygame
 pygame.init()
 
@@ -43,10 +44,10 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0
 
         self.health = 100
-        self.score = 0
+        self.score = 10
 
         #maximum jump height
-        self.jump_height = -10
+        self.jump_height = -12
 
         #health
         self.max_health = 100
@@ -100,6 +101,8 @@ class Player(pygame.sprite.Sprite):
              #setting player invincible after being hit
              self.invincible = True
              pygame.time.set_timer(pygame.USEREVENT, 1000)
+
+               
     
     def draw_health_bar(self, surface):
         # Calculate the width of the health bar
@@ -185,7 +188,10 @@ def main():
         for enemy_hit in collissions:
             player.handle_collision(enemy_hit)      
 
-        
+        if (player.rect.bottom < enemy.rect.top) and (player.prev_bottom >= enemy.rect.top):
+            player.score += 1
+            print('Score:', player.score)
+
         # Rendering
         # Clear the screen
         screen.fill(BLACK)
