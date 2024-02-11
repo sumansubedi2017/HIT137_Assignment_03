@@ -183,6 +183,7 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
+            #Check if the game is over
             if game_over:
                 if restart_button.is_clicked(mouse_pos) and game_over:
                     player.health = 100
@@ -193,12 +194,14 @@ while running:
                     projectiles.empty()
                     enemies.empty()
                     collectibles.empty()
+                    #Reset player's position
                     player.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT)
                     all_sprites.add(player)
             elif game_paused:
                 game_paused = False
             else:
                 pass 
+    #Update all sprites if the game is not over
     if not game_over:
         all_sprites.update()
 
@@ -207,6 +210,7 @@ while running:
             player.score += 20
 
         enemy_hit_player = pygame.sprite.spritecollide(player, enemies, False)
+        #Check if player's health is depleted
         if enemy_hit_player:
             player.health -= 10
             if player.health <= 0:
@@ -215,12 +219,12 @@ while running:
                     game_over = True
                 else:
                     player.health = 100
-        
+        #Check if the number of enemies on the screen is less than 2
         if len(enemies) < 2:
             enemy = Enemy(random.choice(level_enemy_positions[current_level]))
             all_sprites.add(enemy)
             enemies.add(enemy)
-
+        #Check if player's score is at least 100 and the current level is LEVEL1
         if player.score >= 100 and current_level == LEVEL_1:
             if current_level< LEVEL_2:                      
                         current_level = LEVEL_2
@@ -230,27 +234,29 @@ while running:
 
                         background_image = pygame.image.load("level2.jpg").convert()
                         background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
+                        #Increase the speed of all enemies for LEVEL2
                         for enemy in enemies:
                             enemy.speed = 3
-
+        #Check if player's score is at least 300 and the current level is LEVEL Two
         if  player.score >=300 and current_level == LEVEL_2:
                         current_level = LEVEL_3
                         player.score= 0
                         level_enemy_positions.append([(700, 300), (600, 250), (500, 200)])
+                        #Load and scale the background image for LEVEL 3
                         background_image = pygame.image.load("level3.jpg").convert()
                         background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
-                        # Increase enemy speed for level 3
+                        #Increase enemy speed for level 3
                         for enemy in enemies:
                             enemy.speed = 5
                             
-
+         #Check if player's score is at least 500 and the current level is LEVEL Three 
         if player.score >= 500 and current_level ==LEVEL_3:
             game_paused =True
             font = pygame.font.Font(None, 48)
             congrats_text = font.render("CONGRATULATIONS! You completed Level 3!", True, GREEN)
             screen.blit(congrats_text, (200, 200))
             pygame.display.flip()
-
+        #Fill the screen with black color
         screen.fill((0, 0, 0))
         screen.blit(background_image, (0, 0))
         all_sprites.draw(screen)
@@ -267,14 +273,15 @@ while running:
 
         level_text = font.render(f"Level: {current_level}", True, WHITE)
         screen.blit(level_text, (20, 80))
-
+        #If the game is over, create and draw a restart button
         if game_over:
             restart_button = Button('Restart', (300, 400), (200, 50))
             restart_button.draw(screen)
-
+            #Check for events in the event queue
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
+                    #Check if the restart button is clicked
                     if restart_button.is_clicked(mouse_pos):
                         player.health = 100
                         player.lives = 3
@@ -284,12 +291,14 @@ while running:
                         projectiles.empty()
                         enemies.empty()
                         collectibles.empty()
+                        #Reset player's position
                         player.rect.bottomleft = (50, SCREEN_HEIGHT - GROUND_HEIGHT)
                         all_sprites.add(player)
+        #If the game is not over and any key is pressed
         else:
-            for event in pygame.event.get():
+            for event in pygame.event.get(): #Loop through all events in the event queue
                 if event.type == pygame.KEYDOWN:
-                    game_paused = False  # Unpause the game when any key is pressed
+                    game_paused = False  #Unpause the game when any key is pressed
                     screen.fill((0, 0, 0))
                     screen.blit(background_image, (0, 0))
                     all_sprites.draw(screen)
