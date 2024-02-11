@@ -17,13 +17,11 @@ PROJECTILE_HEIGHT = 5
 COLLECTIBLE_WIDTH = 30
 COLLECTIBLE_HEIGHT = 30
 
-
 LEVEL_1 = 1
 LEVEL_2 = 2
 LEVEL_3 = 3
 
 current_level = LEVEL_1
-
 
 # Colors
 WHITE = (255, 255, 255)
@@ -31,12 +29,12 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 
-# Get the current working directory
+#Get the current working directory
 current_directory = os.getcwd()
 print("Current working directory:", current_directory)
 
-
-# Player class
+#Player class
+#creating the Player class, which inherits from pygame.sprite.Sprite
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -113,7 +111,6 @@ class Button:
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
 
-
 # Enemy class
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos):
@@ -131,9 +128,7 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.rect.x -= self.speed
         if self.rect.right <= 0:
-            self.kill()
-                
-            
+            self.kill()                        
 
 # Initialize Pygame
 pygame.init()
@@ -171,8 +166,7 @@ level_enemy_positions = [
     [(700, 300), (600, 250), (500, 200)]
 ]
 game_paused = False
-while running:
-    
+while running: 
     clock.tick(60)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -184,7 +178,6 @@ while running:
                     projectile = Projectile(player.rect.midright, target_enemy.rect.center)
                     all_sprites.add(projectile)
                     projectiles.add(projectile)
-
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_pos = pygame.mouse.get_pos()
@@ -202,10 +195,8 @@ while running:
                     all_sprites.add(player)
             elif game_paused:
                 game_paused = False
-
             else:
                 pass 
-
     if not game_over:
         all_sprites.update()
 
@@ -227,7 +218,6 @@ while running:
             enemy = Enemy(random.choice(level_enemy_positions[current_level]))
             all_sprites.add(enemy)
             enemies.add(enemy)
-        
 
         if player.score >= 100 and current_level == LEVEL_1:
             if current_level< LEVEL_2:                      
