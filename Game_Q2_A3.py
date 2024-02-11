@@ -51,7 +51,7 @@ class Player(pygame.sprite.Sprite):
         self.health = 100
         self.lives = 3
         self.score = 0
-
+    #Define the update method to handle the movement and behavior of the player character
     def update(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT]:
@@ -66,7 +66,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = SCREEN_HEIGHT - GROUND_HEIGHT
 
 
-# Projectile class
+#Define the Projectile class
 class Projectile(pygame.sprite.Sprite):
     def __init__(self, start_pos, target_pos):
         super().__init__()
