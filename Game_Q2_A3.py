@@ -90,7 +90,7 @@ class Projectile(pygame.sprite.Sprite):
         # Check if the projectile reaches the target vertically
         if (dy > 0 and self.rect.centery >= self.target_pos[1]) or (dy < 0 and self.rect.centery <= self.target_pos[1]):
             self.kill()
-        
+#Define the Button class        
 class Button:
     def __init__(self, text, position, size, color=(200, 200, 200), hover_color=(255, 255, 255), font_size=24):
         self.text = text
@@ -100,18 +100,18 @@ class Button:
         self.hover_color = hover_color
         self.font = pygame.font.Font(None, font_size)
         self.rect = pygame.Rect(position, size)
-
+    #Define the draw method to render the button on the screen
     def draw(self, screen, hover=False):
         color = self.hover_color if hover else self.color
         pygame.draw.rect(screen, color, self.rect)
         text_surface = self.font.render(self.text, True, (0, 0, 0))
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
-
+    #Define the is_clicked method to check if the given position is within the button's rectangular area
     def is_clicked(self, pos):
         return self.rect.collidepoint(pos)
 
-# Enemy class
+#Define the Enemy class
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, pos):
         super().__init__()
@@ -124,7 +124,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health = 100
         self.shoot_delay = 1000  # Delay between shots in milliseconds
         self.last_shot = pygame.time.get_ticks()
-
+ #Define the update method to handle the movement and behavior of the enemy
     def update(self):
         self.rect.x -= self.speed
         if self.rect.right <= 0:
@@ -151,7 +151,7 @@ game_over = False
 clock = pygame.time.Clock()
 spawn_enemy_event = pygame.USEREVENT + 1
 pygame.time.set_timer(spawn_enemy_event, 3000)
-
+#containing multiple background images loaded from files
 backgrounds = [
     pygame.image.load("background.jpeg").convert(),
     pygame.image.load("background.jpeg").convert(),
@@ -166,8 +166,10 @@ level_enemy_positions = [
     [(700, 300), (600, 250), (500, 200)]
 ]
 game_paused = False
+#Enter the main game loop
 while running: 
     clock.tick(60)
+    #Iterate through each event in the event queue
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
