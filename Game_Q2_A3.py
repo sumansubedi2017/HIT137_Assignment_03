@@ -93,10 +93,6 @@ class Projectile(pygame.sprite.Sprite):
         if (dy > 0 and self.rect.centery >= self.target_pos[1]) or (dy < 0 and self.rect.centery <= self.target_pos[1]):
             self.kill()
         
-
-
-
-            
 class Button:
     def __init__(self, text, position, size, color=(200, 200, 200), hover_color=(255, 255, 255), font_size=24):
         self.text = text
@@ -138,8 +134,6 @@ class Enemy(pygame.sprite.Sprite):
             self.kill()
                 
             
-
-       
 
 # Initialize Pygame
 pygame.init()
@@ -215,8 +209,6 @@ while running:
     if not game_over:
         all_sprites.update()
 
-        
-
         enemy_hit = pygame.sprite.groupcollide(enemies, projectiles, True, True)
         if enemy_hit:
             player.score += 20
@@ -249,10 +241,6 @@ while running:
                         for enemy in enemies:
                             enemy.speed = 3
 
-
-                        
-
-
         if  player.score >=300 and current_level == LEVEL_2:
                         current_level = LEVEL_3
                         player.score= 0
@@ -263,9 +251,6 @@ while running:
                         for enemy in enemies:
                             enemy.speed = 5
                             
-                   
-
-
 
         if player.score >= 500 and current_level ==LEVEL_3:
             game_paused =True
